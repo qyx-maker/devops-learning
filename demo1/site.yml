@@ -1,0 +1,15 @@
+---
+- hosts: server
+  remote_user: root
+  gather_facts: no
+  tasks: 
+    - name: install httpd
+      dnf: name=httpd,httpd-tools state=installed
+    - name: configure httpd
+      copy: src=/root/httpd.conf dest=/etc/httpd/conf/httpd.conf
+      notify: Restart httpd server
+    - name: start httpd server
+      systemd: name=httpd state=started enabled=yes
+  handlers:
+    - name: Restart httpd server
+      systemd: name=httpd state=restarted
